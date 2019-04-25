@@ -1,26 +1,29 @@
-import { Component, ViewChild, ElementRef, OnInit, AfterViewInit } from '@angular/core';
+import { Component, ViewChild, ElementRef, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { Game } from '../model/game';
 import { Ball, Boundary } from '../model/ball';
-import { interval } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { interval, Subject } from 'rxjs';
+import { tap, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-game',
   templateUrl: './game.component.html',
   styleUrls: ['./game.component.scss']
 })
-export class GameComponent implements AfterViewInit, OnInit {
+export class GameComponent implements AfterViewInit, OnInit, OnDestroy {
 
   @ViewChild('gameCanvas') canvasRef!: ElementRef<HTMLCanvasElement>;
 
   private _game: Game;
   private _canvasWidth = 500;
   private _canvasHeight = 500;
+  private _endGame$: Subject<void>;
 
   private _ctx!: CanvasRenderingContext2D;
+  private _secondsPerFrame = 1000 / 60; // for 60 fps
 
   constructor() {
     this._game = new Game(this._canvasHeight, this._canvasWidth);
+    this._endGame$ = new Subject();
   }
 
   ngAfterViewInit(): void {
@@ -28,11 +31,11 @@ export class GameComponent implements AfterViewInit, OnInit {
   }
 
   ngOnInit(): void {
-    interval(100).pipe(
-      tap(() => this._game.tick())
-    ).subscribe(
-      () => this.paint()
-    );
+    this.startGame(this._secondsPerFrame);
+  }
+
+  ngOnDestroy(): void {
+    this.endGame();
   }
 
   private initialiseCanvas(canvasRef: ElementRef<HTMLCanvasElement>): CanvasRenderingContext2D {
@@ -45,6 +48,19 @@ export class GameComponent implements AfterViewInit, OnInit {
     } else {
       throw new Error('Could not get CanvasRenderingContext2D')
     }
+  }
+
+  private startGame(secondsPerFrame: number): void {
+    interval(secondsPerFrame).pipe(
+      tap(() => this._game.tick()),
+      takeUntil(this._endGame$)
+    ).subscribe(
+      () => this.paint()
+    );
+  }
+
+  private endGame(): void {
+    this._endGame$.next();
   }
 
   private paint(): void {

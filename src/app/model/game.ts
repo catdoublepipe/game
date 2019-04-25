@@ -5,7 +5,7 @@ export class Game {
   private _ball: Ball;
 
   constructor(private _height: number, private _width: number) {
-    this._ball = new Ball(15, 15, { x: 0, y: _height / 2 }, { vx: 10, vy: 10 });
+    this._ball = new Ball(15, 15, { x: 15, y: _height / 2 }, { vx: 5, vy: 5 });
   }
 
   get ball(): Ball {
