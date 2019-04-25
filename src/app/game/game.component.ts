@@ -1,6 +1,6 @@
 import { Component, ViewChild, ElementRef, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { Game } from '../model/game';
-import { Ball, Boundary } from '../model/ball';
+import { Ball } from '../model/ball';
 import { interval, Subject } from 'rxjs';
 import { tap, takeUntil } from 'rxjs/operators';
 

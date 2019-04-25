@@ -1,4 +1,4 @@
-import { Ball, Boundary } from './ball';
+import { Ball } from './ball';
 
 export class Game {
 
@@ -24,13 +24,13 @@ export class Game {
 
   private checkYCollision(ball: Ball): void {
     if (ball.getBoundary().bottom >= this._height || ball.getBoundary().top <= 0) {
-      this.ball.bounceY()
+      this.ball.bounceY();
     }
   }
 
   private checkXCollision(ball: Ball): void {
     if (ball.getBoundary().right >= this._width || ball.getBoundary().left <= 0) {
-      this.ball.bounceX()
+      this.ball.bounceX();
     }
   }
 
