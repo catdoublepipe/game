@@ -1,4 +1,6 @@
-import { Component, ViewChild, ElementRef, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
+import { BatAction } from '../model/bat';
+import { KeyboardKeyCode } from '../model/keyboard-key-code';
+import { Component, ViewChild, ElementRef, OnInit, AfterViewInit, OnDestroy, HostListener } from '@angular/core';
 import { Game } from '../model/game';
 import { Ball } from '../model/ball';
 import { interval, Subject } from 'rxjs';
@@ -6,11 +8,11 @@ import { tap, takeUntil } from 'rxjs/operators';
 import { Bat } from '../model/bat';
 
 @Component({
-  selector: 'app-game',
-  templateUrl: './game.component.html',
-  styleUrls: ['./game.component.scss']
+  selector: 'app-pong-game',
+  templateUrl: './pong-game.component.html',
+  styleUrls: ['./pong-game.component.scss']
 })
-export class GameComponent implements AfterViewInit, OnInit, OnDestroy {
+export class PongGameComponent implements AfterViewInit, OnInit, OnDestroy {
 
   @ViewChild('gameCanvas') canvasRef!: ElementRef<HTMLCanvasElement>;
 
@@ -21,6 +23,8 @@ export class GameComponent implements AfterViewInit, OnInit, OnDestroy {
 
   private _ctx!: CanvasRenderingContext2D;
   private _secondsPerFrame = 1000 / 80; // for 60 fps
+
+  private _playerCommand: BatAction = BatAction.STAY;
 
   constructor() {
     this._game = new Game(this._canvasHeight, this._canvasWidth);
@@ -39,6 +43,22 @@ export class GameComponent implements AfterViewInit, OnInit, OnDestroy {
     this.endGame();
   }
 
+  @HostListener('window:keydown', ['$event'])
+  keyDown(event: KeyboardEvent): void {
+    if (event.keyCode == KeyboardKeyCode.UP) {
+      this._playerCommand = BatAction.MOVE_UP;
+    }
+
+    if (event.keyCode == KeyboardKeyCode.DOWN) {
+      this._playerCommand = BatAction.MOVE_DOWN;
+    }
+  }
+
+  @HostListener('window:keyup', ['$event'])
+  keyUp(event: KeyboardEvent): void {
+    this._playerCommand = BatAction.STAY;
+  }
+
   private initialiseCanvas(canvasRef: ElementRef<HTMLCanvasElement>): CanvasRenderingContext2D {
     let ctx = canvasRef.nativeElement.getContext('2d');
 
@@ -52,8 +72,8 @@ export class GameComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   private startGame(secondsPerFrame: number): void {
-    interval(secondsPerFrame).pipe(
-      tap(() => this._game.tick()),
+    interval(this._secondsPerFrame).pipe(
+      tap(() => this._game.tick(this._playerCommand)),
       takeUntil(this._endGame$)
     ).subscribe(
       () => this.paint()

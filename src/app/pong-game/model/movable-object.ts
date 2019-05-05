@@ -1,7 +1,7 @@
 import { Acceleration, NO_ACCELERATION } from './acceleration';
 import { Boundary } from './boundary';
 import { Position } from './position';
-import { Velocity } from './velocity';
+import { Velocity, NO_VELOCITY } from './velocity';
 
 export abstract class MovableObject {
 
@@ -9,7 +9,7 @@ export abstract class MovableObject {
     protected _height: number,
     protected _width: number,
     protected _position: Position,
-    protected _velocity: Velocity,
+    protected _velocity: Velocity = NO_VELOCITY,
     protected _acceleration: Acceleration = NO_ACCELERATION
   ) { }
 
@@ -52,6 +52,38 @@ export abstract class MovableObject {
       right: this.position.x + (this._width / 2),
       left: this.position.x - (this._width / 2)
     };
+  }
+
+  isMovingUp(): boolean {
+    return this._velocity.vy < 0;
+  }
+
+  isMovingDown(): boolean {
+    return this._velocity.vy > 0;
+  }
+
+  isMovingLeft(): boolean {
+    return this._velocity.vx < 0;
+  }
+
+  isMovingRight(): boolean {
+    return this._velocity.vx > 0;
+  }
+
+  /**
+   * This algorithm works by detecting whether there is a gap between the two rectangles' sides.
+   * The assumption is that they are axis-aligned (i.e. not rotated).
+   * 
+   * See https://developer.mozilla.org/en-US/docs/Games/Techniques/2D_collision_detection#Axis-Aligned_Bounding_Box
+   * @param obstacleObject
+   */
+  hasCollidedWith(obstacleBoundary: Boundary): boolean {
+    const objectBoundary: Boundary = this.getBoundary();
+
+    return objectBoundary.left < obstacleBoundary.right
+      && objectBoundary.right > obstacleBoundary.left
+      && objectBoundary.top < obstacleBoundary.bottom
+      && objectBoundary.bottom > obstacleBoundary.top;
   }
 
 }
