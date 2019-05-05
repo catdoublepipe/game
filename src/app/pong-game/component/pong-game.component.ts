@@ -44,7 +44,7 @@ export class PongGameComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   @HostListener('window:keydown', ['$event'])
-  keyDown(event: KeyboardEvent): void {
+  onKeyDown(event: KeyboardEvent): void {
     if (event.keyCode === KeyboardKeyCode.UP) {
       this._playerCommand = BatAction.MOVE_UP;
     }
@@ -55,7 +55,7 @@ export class PongGameComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   @HostListener('window:keyup', ['$event'])
-  keyUp(event: KeyboardEvent): void {
+  onKeyUp(event: KeyboardEvent): void {
     this._playerCommand = BatAction.STAY;
   }
 
