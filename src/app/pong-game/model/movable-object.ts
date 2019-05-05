@@ -73,9 +73,8 @@ export abstract class MovableObject {
   /**
    * This algorithm works by detecting whether there is a gap between the two rectangles' sides.
    * The assumption is that they are axis-aligned (i.e. not rotated).
-   * 
+   *
    * See https://developer.mozilla.org/en-US/docs/Games/Techniques/2D_collision_detection#Axis-Aligned_Bounding_Box
-   * @param obstacleObject
    */
   hasCollidedWith(obstacleBoundary: Boundary): boolean {
     const objectBoundary: Boundary = this.getBoundary();

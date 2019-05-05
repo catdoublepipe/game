@@ -35,7 +35,7 @@ export class Game {
   }
 
   private handleCollisions(): void {
-    this.handleBallAndGameCollisions()
+    this.handleBallAndGameCollisions();
     this.handleBallAndBatCollisions();
     this.handleBatAndGameCollisions();
   }

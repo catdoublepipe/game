@@ -22,7 +22,7 @@ export class PongGameComponent implements AfterViewInit, OnInit, OnDestroy {
   private _endGame$: Subject<void>;
 
   private _ctx!: CanvasRenderingContext2D;
-  private _secondsPerFrame = 1000 / 80; // for 60 fps
+  private _secondsPerFrame = 1000 / 80;
 
   private _playerCommand: BatAction = BatAction.STAY;
 
@@ -45,11 +45,11 @@ export class PongGameComponent implements AfterViewInit, OnInit, OnDestroy {
 
   @HostListener('window:keydown', ['$event'])
   keyDown(event: KeyboardEvent): void {
-    if (event.keyCode == KeyboardKeyCode.UP) {
+    if (event.keyCode === KeyboardKeyCode.UP) {
       this._playerCommand = BatAction.MOVE_UP;
     }
 
-    if (event.keyCode == KeyboardKeyCode.DOWN) {
+    if (event.keyCode === KeyboardKeyCode.DOWN) {
       this._playerCommand = BatAction.MOVE_DOWN;
     }
   }
@@ -60,14 +60,14 @@ export class PongGameComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   private initialiseCanvas(canvasRef: ElementRef<HTMLCanvasElement>): CanvasRenderingContext2D {
-    let ctx = canvasRef.nativeElement.getContext('2d');
+    const ctx = canvasRef.nativeElement.getContext('2d');
 
     if (ctx !== null) {
       ctx.canvas.width = this._canvasWidth;
       ctx.canvas.height = this._canvasHeight;
       return ctx;
     } else {
-      throw new Error('Could not get CanvasRenderingContext2D')
+      throw new Error('Could not get CanvasRenderingContext2D');
     }
   }
 
